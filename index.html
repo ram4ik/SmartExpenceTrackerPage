@@ -6,56 +6,98 @@
     <title>SmartExpenseTracker - Take Control of Your Money</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="translations.js"></script>
 </head>
 <body>
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <button class="language-btn" id="languageBtn">
+            <span class="flag" id="currentFlag">🇬🇧</span>
+            <span class="lang-name" id="currentLang">English</span>
+            <span class="arrow">▼</span>
+        </button>
+        <div class="language-dropdown" id="languageDropdown">
+            <!-- Languages will be populated by JavaScript -->
+        </div>
+    </div>
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1>Stop Bleeding Money.<br><span class="highlight">Start Saving Smart.</span></h1>
-                    <p class="hero-subtitle">Track every penny, spot spending leaks, and watch your savings grow with SmartExpenseTracker - the app that pays for itself.</p>
-                    
+                    <h1 data-i18n="hero.title">Stop Bleeding Money.<br><span class="highlight" data-i18n="hero.titleHighlight">Start Saving Smart.</span></h1>
+                    <p class="hero-subtitle" data-i18n="hero.subtitle">Track every penny, spot spending leaks, and watch your savings grow with SmartExpenseTracker - the app that pays for itself.</p>
+
                     <div class="savings-counter">
                         <div class="counter-item">
                             <span class="counter-number" data-target="2847">$0</span>
-                            <span class="counter-label">Average Saved Per Year</span>
+                            <span class="counter-label" data-i18n="hero.savedPerYear">Average Saved Per Year</span>
                         </div>
                     </div>
-                    
+
                     <div class="cta-buttons">
                         <a href="https://apps.apple.com/us/app/smartexpencetracker/id6758557713" class="btn-primary">
                             <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on App Store">
                         </a>
                         <div class="price-tag">
-                            <span class="free">FREE</span>
-                            <span class="launch">Launch Special!</span>
+                            <span class="free" data-i18n="hero.free">FREE</span>
+                            <span class="launch" data-i18n="hero.launchSpecial">Launch Special!</span>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="hero-visual">
-                    <div class="phone-mockup">
-                        <div class="phone-screen">
-                            <div class="app-preview">
-                                <div class="savings-chart"></div>
-                                <div class="expense-items">
-                                    <div class="expense-item">
-                                        <span class="category">☕ Coffee</span>
-                                        <span class="amount red">-$4.50</span>
-                                    </div>
-                                    <div class="expense-item">
-                                        <span class="category">💰 Savings</span>
-                                        <span class="amount green">+$250.00</span>
-                                    </div>
-                                    <div class="expense-item">
-                                        <span class="category">🛒 Groceries</span>
-                                        <span class="amount red">-$67.23</span>
-                                    </div>
-                                </div>
+                    <div class="screenshot-carousel">
+                        <div class="carousel-container">
+                            <button class="carousel-btn prev" onclick="moveCarousel(-1)">‹</button>
+                            <div class="screenshot-wrapper">
+                                <img src="460x998bb.webp" alt="SmartExpenseTracker Screenshot 1" class="app-screenshot active">
+                                <img src="460x998bb-2.webp" alt="SmartExpenseTracker Screenshot 2" class="app-screenshot">
+                                <img src="460x998bb-3.webp" alt="SmartExpenseTracker Screenshot 3" class="app-screenshot">
+                                <img src="460x998bb-4.webp" alt="SmartExpenseTracker Screenshot 4" class="app-screenshot">
+                                <img src="460x998bb-5.webp" alt="SmartExpenseTracker Screenshot 5" class="app-screenshot">
+                                <img src="460x998bb-6.webp" alt="SmartExpenseTracker Screenshot 6" class="app-screenshot">
                             </div>
+                            <button class="carousel-btn next" onclick="moveCarousel(1)">›</button>
+                        </div>
+                        <div class="carousel-dots">
+                            <span class="dot active" onclick="currentSlideFunc(0)"></span>
+                            <span class="dot" onclick="currentSlideFunc(1)"></span>
+                            <span class="dot" onclick="currentSlideFunc(2)"></span>
+                            <span class="dot" onclick="currentSlideFunc(3)"></span>
+                            <span class="dot" onclick="currentSlideFunc(4)"></span>
+                            <span class="dot" onclick="currentSlideFunc(5)"></span>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Showcase Section -->
+    <section class="screenshots-showcase">
+        <div class="container">
+            <h2 data-i18n="screenshots.title">See It In Action</h2>
+            <p class="section-subtitle" data-i18n="screenshots.subtitle">A powerful expense tracker designed for simplicity</p>
+
+            <div class="screenshots-grid">
+                <div class="screenshot-card">
+                    <img src="460x998bb.webp" alt="Beautiful Insights">
+                </div>
+                <div class="screenshot-card">
+                    <img src="460x998bb-2.webp" alt="All Your Expenses Organized">
+                </div>
+                <div class="screenshot-card">
+                    <img src="460x998bb-3.webp" alt="Add Expenses In Seconds">
+                </div>
+                <div class="screenshot-card">
+                    <img src="460x998bb-4.webp" alt="Detailed Statistics">
+                </div>
+                <div class="screenshot-card">
+                    <img src="460x998bb-5.webp" alt="Smart Categories">
+                </div>
+                <div class="screenshot-card">
+                    <img src="460x998bb-6.webp" alt="Calendar View">
                 </div>
             </div>
         </div>
@@ -64,33 +106,33 @@
     <!-- Money Leaks Section -->
     <section class="money-leaks">
         <div class="container">
-            <h2>Where Your Money Disappears</h2>
-            <p class="section-subtitle">Most people lose $200+ monthly to "invisible" expenses. Don't be one of them.</p>
-            
+            <h2 data-i18n="moneyLeaks.title">Where Your Money Disappears</h2>
+            <p class="section-subtitle" data-i18n="moneyLeaks.subtitle">Most people lose $200+ monthly to "invisible" expenses. Don't be one of them.</p>
+
             <div class="leaks-grid">
                 <div class="leak-item">
                     <div class="leak-icon">☕</div>
-                    <h3>Daily Coffee Runs</h3>
-                    <p class="leak-cost">$150/month</p>
-                    <p>That $5 latte adds up faster than you think</p>
+                    <h3 data-i18n="moneyLeaks.coffee.title">Daily Coffee Runs</h3>
+                    <p class="leak-cost" data-i18n="moneyLeaks.coffee.cost">$150/month</p>
+                    <p data-i18n="moneyLeaks.coffee.desc">That $5 latte adds up faster than you think</p>
                 </div>
                 <div class="leak-item">
                     <div class="leak-icon">📱</div>
-                    <h3>Forgotten Subscriptions</h3>
-                    <p class="leak-cost">$89/month</p>
-                    <p>Apps you forgot you're paying for</p>
+                    <h3 data-i18n="moneyLeaks.subscriptions.title">Forgotten Subscriptions</h3>
+                    <p class="leak-cost" data-i18n="moneyLeaks.subscriptions.cost">$89/month</p>
+                    <p data-i18n="moneyLeaks.subscriptions.desc">Apps you forgot you're paying for</p>
                 </div>
                 <div class="leak-item">
                     <div class="leak-icon">🛒</div>
-                    <h3>Impulse Purchases</h3>
-                    <p class="leak-cost">$127/month</p>
-                    <p>Those "quick" store runs that break the budget</p>
+                    <h3 data-i18n="moneyLeaks.impulse.title">Impulse Purchases</h3>
+                    <p class="leak-cost" data-i18n="moneyLeaks.impulse.cost">$127/month</p>
+                    <p data-i18n="moneyLeaks.impulse.desc">Those "quick" store runs that break the budget</p>
                 </div>
                 <div class="leak-item">
                     <div class="leak-icon">🍕</div>
-                    <h3>Takeout Overload</h3>
-                    <p class="leak-cost">$203/month</p>
-                    <p>Convenience that costs a fortune</p>
+                    <h3 data-i18n="moneyLeaks.takeout.title">Takeout Overload</h3>
+                    <p class="leak-cost" data-i18n="moneyLeaks.takeout.cost">$203/month</p>
+                    <p data-i18n="moneyLeaks.takeout.desc">Convenience that costs a fortune</p>
                 </div>
             </div>
         </div>
@@ -99,43 +141,43 @@
     <!-- Features Section -->
     <section class="features">
         <div class="container">
-            <h2>Your Money-Saving Arsenal</h2>
-            
+            <h2 data-i18n="features.title">Your Money-Saving Arsenal</h2>
+
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">📸</div>
-                    <h3>Snap & Track</h3>
-                    <p>Scan receipts instantly. No more manual entry, no more forgotten expenses.</p>
+                    <h3 data-i18n="features.snap.title">Snap & Track</h3>
+                    <p data-i18n="features.snap.desc">Scan receipts instantly. No more manual entry, no more forgotten expenses.</p>
                 </div>
-                
+
                 <div class="feature-card">
                     <div class="feature-icon">📊</div>
-                    <h3>Beautiful Charts</h3>
-                    <p>See exactly where your money goes with stunning visual insights.</p>
+                    <h3 data-i18n="features.charts.title">Beautiful Charts</h3>
+                    <p data-i18n="features.charts.desc">See exactly where your money goes with stunning visual insights.</p>
                 </div>
-                
+
                 <div class="feature-card">
                     <div class="feature-icon">🎯</div>
-                    <h3>Smart Insights</h3>
-                    <p>Get personalized tips to cut spending and boost your savings rate.</p>
+                    <h3 data-i18n="features.insights.title">Smart Insights</h3>
+                    <p data-i18n="features.insights.desc">Get personalized tips to cut spending and boost your savings rate.</p>
                 </div>
-                
+
                 <div class="feature-card">
                     <div class="feature-icon">🔒</div>
-                    <h3>Privacy First</h3>
-                    <p>Your financial data stays on your device. We don't collect anything.</p>
+                    <h3 data-i18n="features.privacy.title">Privacy First</h3>
+                    <p data-i18n="features.privacy.desc">Your financial data stays on your device. We don't collect anything.</p>
                 </div>
-                
+
                 <div class="feature-card">
                     <div class="feature-icon">💎</div>
-                    <h3>One-Time Purchase</h3>
-                    <p>No monthly fees eating your savings. Pay once, save forever.</p>
+                    <h3 data-i18n="features.onetime.title">One-Time Purchase</h3>
+                    <p data-i18n="features.onetime.desc">No monthly fees eating your savings. Pay once, save forever.</p>
                 </div>
-                
+
                 <div class="feature-card">
                     <div class="feature-icon">⚡</div>
-                    <h3>Lightning Fast</h3>
-                    <p>Track expenses in seconds, not minutes. Built for busy savers.</p>
+                    <h3 data-i18n="features.fast.title">Lightning Fast</h3>
+                    <p data-i18n="features.fast.desc">Track expenses in seconds, not minutes. Built for busy savers.</p>
                 </div>
             </div>
         </div>
@@ -144,25 +186,25 @@
     <!-- Social Proof -->
     <section class="social-proof">
         <div class="container">
-            <h2>Join Thousands of Smart Savers</h2>
-            
+            <h2 data-i18n="social.title">Join Thousands of Smart Savers</h2>
+
             <div class="testimonials">
                 <div class="testimonial">
                     <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p>"Found $340 in monthly subscriptions I forgot about. This app paid for itself in the first week!"</p>
-                    <span class="author">- Sarah M.</span>
+                    <p data-i18n="social.testimonial1">"Found $340 in monthly subscriptions I forgot about. This app paid for itself in the first week!"</p>
+                    <span class="author" data-i18n="social.author1">- Sarah M.</span>
                 </div>
-                
+
                 <div class="testimonial">
                     <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p>"Finally understand where my money goes. Saved $2,100 last year just by being aware."</p>
-                    <span class="author">- Mike R.</span>
+                    <p data-i18n="social.testimonial2">"Finally understand where my money goes. Saved $2,100 last year just by being aware."</p>
+                    <span class="author" data-i18n="social.author2">- Mike R.</span>
                 </div>
-                
+
                 <div class="testimonial">
                     <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p>"The receipt scanning is magic. Takes 2 seconds and I never miss an expense anymore."</p>
-                    <span class="author">- Jennifer L.</span>
+                    <p data-i18n="social.testimonial3">"The receipt scanning is magic. Takes 2 seconds and I never miss an expense anymore."</p>
+                    <span class="author" data-i18n="social.author3">- Jennifer L.</span>
                 </div>
             </div>
         </div>
@@ -172,19 +214,19 @@
     <section class="final-cta">
         <div class="container">
             <div class="cta-content">
-                <h2>Ready to Stop Wasting Money?</h2>
-                <p>Download SmartExpenseTracker now and start your journey to financial freedom.</p>
-                
+                <h2 data-i18n="cta.title">Ready to Stop Wasting Money?</h2>
+                <p data-i18n="cta.subtitle">Download SmartExpenseTracker now and start your journey to financial freedom.</p>
+
                 <div class="urgency-banner">
-                    <span class="urgency-text">🔥 Launch Special - FREE for Limited Time!</span>
+                    <span class="urgency-text" data-i18n="cta.urgency">🔥 Launch Special - FREE for Limited Time!</span>
                 </div>
-                
+
                 <a href="https://apps.apple.com/us/app/smartexpencetracker/id6758557713" class="btn-primary large">
                     <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on App Store">
                 </a>
-                
+
                 <div class="guarantee">
-                    <p>✅ No subscriptions ✅ Privacy protected ✅ Works on all Apple devices</p>
+                    <p data-i18n="cta.guarantee">✅ No subscriptions ✅ Privacy protected ✅ Works on all Apple devices</p>
                 </div>
             </div>
         </div>
@@ -192,7 +234,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2024 SmartExpenseTracker. Take control of your finances.</p>
+            <p data-i18n="footer.copyright">&copy; 2024 SmartExpenseTracker. Take control of your finances.</p>
         </div>
     </footer>
 

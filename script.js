@@ -1,10 +1,175 @@
+// Internationalization (i18n)
+let currentLanguage = 'en';
+
+// Detect user's browser language
+function detectLanguage() {
+    const browserLang = navigator.language || navigator.userLanguage;
+    const langCode = browserLang.split('-')[0]; // Get primary language code
+
+    // Map language codes to our available translations
+    const langMap = {
+        'en': 'en',
+        'fi': 'fi',
+        'sv': 'sv',
+        'no': 'no',
+        'nb': 'no', // Norwegian Bokmål
+        'nn': 'no', // Norwegian Nynorsk
+        'da': 'da',
+        'nl': 'nl',
+        'ru': 'ru',
+        'de': 'de',
+        'pl': 'pl',
+        'cs': 'cs',
+        'fr': 'fr',
+        'it': 'it',
+        'es': 'es',
+        'pt': 'pt',
+        'tr': 'tr',
+        'ar': 'ar',
+        'zh': 'zh',
+        'ko': 'ko',
+        'ja': 'ja',
+        'tl': 'tl',
+        'hi': 'hi'
+    };
+
+    return langMap[langCode] || 'en';
+}
+
+// Change language
+function changeLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('preferredLanguage', lang);
+
+    // Update all elements with data-i18n attribute
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        const keys = key.split('.');
+        let value = translations[lang];
+
+        for (const k of keys) {
+            value = value[k];
+        }
+
+        if (value) {
+            // Handle HTML content with <br> or <span>
+            if (element.querySelector('.highlight')) {
+                const parts = key.split('.');
+                if (parts[parts.length - 1] === 'title') {
+                    const highlightSpan = element.querySelector('.highlight');
+                    const titleText = translations[lang].hero.title;
+                    const highlightText = translations[lang].hero.titleHighlight;
+                    element.innerHTML = titleText + '<br><span class="highlight" data-i18n="hero.titleHighlight">' + highlightText + '</span>';
+                }
+            } else {
+                element.textContent = value;
+            }
+        }
+    });
+
+    // Update language selector display
+    document.getElementById('currentFlag').textContent = translations[lang].flag;
+    document.getElementById('currentLang').textContent = translations[lang].name;
+
+    // Update active state in dropdown
+    document.querySelectorAll('.language-option').forEach(option => {
+        option.classList.remove('active');
+        if (option.dataset.lang === lang) {
+            option.classList.add('active');
+        }
+    });
+
+    // Update HTML lang attribute
+    document.documentElement.lang = lang;
+}
+
+// Initialize language dropdown
+function initLanguageDropdown() {
+    const dropdown = document.getElementById('languageDropdown');
+
+    Object.keys(translations).forEach(langCode => {
+        const lang = translations[langCode];
+        const option = document.createElement('div');
+        option.className = 'language-option';
+        option.dataset.lang = langCode;
+        option.innerHTML = `
+            <span class="flag">${lang.flag}</span>
+            <span class="name">${lang.name}</span>
+        `;
+        option.addEventListener('click', () => {
+            changeLanguage(langCode);
+            document.getElementById('languageDropdown').classList.remove('show');
+            document.getElementById('languageBtn').classList.remove('open');
+        });
+        dropdown.appendChild(option);
+    });
+}
+
+// Toggle language dropdown
+document.addEventListener('DOMContentLoaded', () => {
+    const languageBtn = document.getElementById('languageBtn');
+    const languageDropdown = document.getElementById('languageDropdown');
+
+    languageBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        languageDropdown.classList.toggle('show');
+        languageBtn.classList.toggle('open');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', () => {
+        languageDropdown.classList.remove('show');
+        languageBtn.classList.remove('open');
+    });
+
+    // Initialize dropdown
+    initLanguageDropdown();
+
+    // Load preferred language or detect from browser
+    const savedLang = localStorage.getItem('preferredLanguage');
+    const detectedLang = detectLanguage();
+    changeLanguage(savedLang || detectedLang);
+});
+
+// Screenshot Carousel
+let currentSlide = 0;
+const slides = document.querySelectorAll('.app-screenshot');
+const dots = document.querySelectorAll('.dot');
+
+function showSlide(n) {
+    if (n >= slides.length) currentSlide = 0;
+    if (n < 0) currentSlide = slides.length - 1;
+
+    slides.forEach(slide => slide.classList.remove('active'));
+    dots.forEach(dot => dot.classList.remove('active'));
+
+    slides[currentSlide].classList.add('active');
+    dots[currentSlide].classList.add('active');
+}
+
+function moveCarousel(direction) {
+    currentSlide += direction;
+    showSlide(currentSlide);
+}
+
+function currentSlideFunc(n) {
+    currentSlide = n;
+    showSlide(currentSlide);
+}
+
+// Auto-advance carousel
+setInterval(() => {
+    currentSlide++;
+    showSlide(currentSlide);
+}, 4000);
+
 // Animated counter for savings
 function animateCounter() {
     const counter = document.querySelector('.counter-number');
     const target = parseInt(counter.getAttribute('data-target'));
     const increment = target / 100;
     let current = 0;
-    
+
     const timer = setInterval(() => {
         current += increment;
         if (current >= target) {
@@ -15,18 +180,17 @@ function animateCounter() {
     }, 30);
 }
 
-// Intersection Observer for animations
+// Intersection Observer for scroll animations
 const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
+    threshold: 0.15,
+    rootMargin: '0px 0px -80px 0px'
 };
 
-const observer = new IntersectionObserver((entries) => {
+const scrollObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-            
+            entry.target.classList.add('visible');
+
             // Trigger counter animation when hero section is visible
             if (entry.target.classList.contains('hero')) {
                 setTimeout(animateCounter, 500);
@@ -37,17 +201,17 @@ const observer = new IntersectionObserver((entries) => {
 
 // Initialize animations when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Set initial styles for animated elements
+    // Observe elements for scroll animations (excluding screenshot cards)
     const animatedElements = document.querySelectorAll('.leak-item, .feature-card, .testimonial');
     animatedElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(el);
+        scrollObserver.observe(el);
     });
-    
+
     // Observe hero section for counter animation
-    observer.observe(document.querySelector('.hero'));
+    const heroSection = document.querySelector('.hero');
+    if (heroSection) {
+        scrollObserver.observe(heroSection);
+    }
     
     // Add smooth scrolling for any anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -71,70 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Add parallax effect to hero background
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const hero = document.querySelector('.hero');
-        if (hero) {
-            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-        }
-    });
-    
-    // Add floating animation to money emojis in phone mockup
-    const phoneScreen = document.querySelector('.phone-screen');
-    if (phoneScreen) {
-        setInterval(() => {
-            createFloatingMoney();
-        }, 3000);
-    }
-});
-
-// Create floating money animation
-function createFloatingMoney() {
-    const phoneScreen = document.querySelector('.phone-screen');
-    if (!phoneScreen) return;
-    
-    const money = document.createElement('div');
-    money.textContent = '💰';
-    money.style.position = 'absolute';
-    money.style.fontSize = '20px';
-    money.style.left = Math.random() * 80 + '%';
-    money.style.bottom = '0px';
-    money.style.opacity = '0.7';
-    money.style.pointerEvents = 'none';
-    money.style.zIndex = '1';
-    money.style.transition = 'all 2s ease-out';
-    
-    phoneScreen.appendChild(money);
-    
-    // Animate upward
-    setTimeout(() => {
-        money.style.bottom = '100%';
-        money.style.opacity = '0';
-    }, 100);
-    
-    // Remove element after animation
-    setTimeout(() => {
-        if (money.parentNode) {
-            money.parentNode.removeChild(money);
-        }
-    }, 2100);
-}
-
-// Add hover effects for interactive elements
-document.addEventListener('DOMContentLoaded', () => {
-    // Add hover effect to leak items
-    document.querySelectorAll('.leak-item').forEach(item => {
-        item.addEventListener('mouseenter', () => {
-            item.style.transform = 'translateY(-10px) scale(1.02)';
-        });
-        
-        item.addEventListener('mouseleave', () => {
-            item.style.transform = 'translateY(0) scale(1)';
-        });
-    });
-    
-    // Add click effect to CTA buttons
+    // Add click effect to CTA buttons for ripple animation
     document.querySelectorAll('.btn-primary').forEach(button => {
         button.addEventListener('click', (e) => {
             // Create ripple effect
@@ -143,14 +244,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const size = Math.max(rect.width, rect.height);
             const x = e.clientX - rect.left - size / 2;
             const y = e.clientY - rect.top - size / 2;
-            
+
             ripple.style.width = ripple.style.height = size + 'px';
             ripple.style.left = x + 'px';
             ripple.style.top = y + 'px';
             ripple.classList.add('ripple');
-            
+
             button.appendChild(ripple);
-            
+
             setTimeout(() => {
                 ripple.remove();
             }, 600);
